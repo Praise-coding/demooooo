@@ -6,11 +6,12 @@
     "esModuleInterop": true,                       // Allows importing of CommonJS modules
     "skipLibCheck": true,                          // Skips checking declaration files for types
     "outDir": "dist",
+    "rootDir": ".",
     "allowSyntheticDefaultImports": true,          // Allows synthetic default imports (for CommonJS)
     "allowImportingTsExtensions": true,            // Allows importing TypeScript files with .ts extensions
     "resolveJsonModule": true,                     // Allows importing of JSON files
     "strict": true,                                // Enables strict type-checking options
-    "noEmit": true                                 // Ensures no JS files are generated (since you're using ts-node)
+//    "noEmit": true                                 // Ensures no JS files are generated (since you're using ts-node)
   },
   "include": [
     "*"                                 // Include TypeScript files in the src folder
