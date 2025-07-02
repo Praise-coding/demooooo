@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import {dbConnector} from "./src/utilities/dbConnector.ts"
+import {dbConnector} from "./utilities/dbConnector.ts"
 
 dotenv.config();
 
