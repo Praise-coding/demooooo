@@ -109,3 +109,5 @@ app.post("/verified", async (req, res) => {
 app.listen(process.env.PORT, () => {
     console.log("Server started at: " + process.env.PORT);
 });
+
+export default app;
