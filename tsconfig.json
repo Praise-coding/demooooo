@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+    "moduleResolution": "node",
+        "module": "ESNext",
+        "allowImportingTsExtensions": true,
+        "allowSyntheticDefaultImports": true
+    }
+}
