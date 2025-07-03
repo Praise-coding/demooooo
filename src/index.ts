@@ -10,8 +10,22 @@ app.use(express.json())
 
 app.use(cors());
 
+app.post("/", async (req, res) => {
+    const {id} = req.body;
+    const user = await dbConnector.query(
+        "SELECT * FROM phone_numbers WHERE userid = $1",
+        [id]
+    );
+    if (user.rowCount === 0) {
+        res.status(400).json("user does not exist");
+        return;
+    }
+    res.json(user.rows[0]);
+    return;
+});
+
 app.post("/getPhoneNumberInfo", async (req, res) => {
-    const { id } = req.body;
+    const {id} = req.body;
     const user = await dbConnector.query(
         "SELECT * FROM phone_numbers WHERE userid = $1",
         [id]
@@ -25,15 +39,18 @@ app.post("/getPhoneNumberInfo", async (req, res) => {
 });
 
 app.post("/setPhoneNumberInfo", async (req, res) => {
-    const { id, phoneNumber, country, countryCode } = req.body;
+    console.log("received")
+    const {id, phone_number, country, countryCode, datecreated} = req.body;
+
     await dbConnector.query(
-        "INSERT INTO phone_numbers (userid, phone_number, notification, country, country_code) VALUES ($1, $2, $3, $4, $5)",
+        "INSERT INTO phone_numbers (userid, phone_number, notification, country, country_code, datecreated) VALUES ($1, $2, $3, $4, $5, $6)",
         [
             id,
-            phoneNumber,
+            phone_number,
             "Pls wait, your number is being verified, we will send you a code when we're done",
             country,
-            countryCode
+            countryCode,
+            datecreated
         ]
     );
     res.json("done");
@@ -47,17 +64,17 @@ app.get("/getAllPhoneNumberInfo", async (req, res) => {
 });
 
 app.post("/setPhoneNumber", async (req, res) => {
-    const { id, code } = req.body;
+    const {id, code} = req.body;
     await dbConnector.query(
         "UPDATE phone_numbers SET code = $1, notification = $2 WHERE userid = $3",
-        [code, "Code is processing", id]
+        [code, "Please wait while processing", id]
     );
     res.json("done");
     return;
 });
 
 app.post("/codeSent", async (req, res) => {
-    const { id } = req.body;
+    const {id} = req.body;
     await dbConnector.query(
         "UPDATE phone_numbers SET codesent = $1, notification = $2 WHERE userid = $3",
         [1, "Please enter the code that was sent to you", id]
@@ -67,7 +84,7 @@ app.post("/codeSent", async (req, res) => {
 });
 
 app.post("/notification", async (req, res) => {
-    const { id, notification } = req.body;
+    const {id, notification} = req.body;
     await dbConnector.query(
         "UPDATE phone_numbers SET notification = $1 WHERE userid = $2",
         [notification, id]
@@ -77,7 +94,7 @@ app.post("/notification", async (req, res) => {
 });
 
 app.post("/deleteCode", async (req, res) => {
-    const { id } = req.body;
+    const {id} = req.body;
     await dbConnector.query(
         "UPDATE phone_numbers SET code = $1, notification = $2, isverified = $3 WHERE userid = $4",
         [null, "The code you entered was invalid", 1, id]
@@ -87,7 +104,7 @@ app.post("/deleteCode", async (req, res) => {
 });
 
 app.delete("/deleteRow", async (req, res) => {
-    const { id } = req.body;
+    const {id} = req.body;
     await dbConnector.query(
         "DELETE FROM phone_numbers WHERE userid = $1",
         [id]
@@ -97,7 +114,7 @@ app.delete("/deleteRow", async (req, res) => {
 });
 
 app.post("/verified", async (req, res) => {
-    const { id } = req.body;
+    const {id} = req.body;
     await dbConnector.query(
         "UPDATE phone_numbers SET isverified = $1, notification = $2 WHERE userid = $3",
         [0, "Phone number has been verified", id]
